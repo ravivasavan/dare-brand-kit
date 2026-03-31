@@ -324,6 +324,30 @@ export default function Home() {
             </div>
           )}
         </section>
+
+        <hr style={{ borderColor: "#201B1C20" }} />
+
+        {/* Templates */}
+        <section>
+          <h4
+            className="text-3xl mb-6 uppercase font-bold"
+            style={{ fontFamily: "var(--font-fk-screamer)" }}
+          >
+            Templates
+          </h4>
+          <div className="space-y-3">
+            <a
+              href="https://docs.google.com/document/d/1UxHglmxxWhBQggPvAas5ooGCgDCh_eAgWK-9GxtV1Bs/edit?tab=t.0#heading=h.e2b3mork447t"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg border transition-colors hover:border-[#293E14]"
+              style={{ borderColor: "#201B1C20" }}
+            >
+              <span className="text-sm font-semibold">Google Docs</span>
+              <span className="text-xs opacity-60">Starter document template</span>
+            </a>
+          </div>
+        </section>
       </main>
     </div>
   );

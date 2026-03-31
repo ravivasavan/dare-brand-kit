@@ -51,6 +51,12 @@ Interactive demos of brand-themed UI elements:
 - [Agentation](https://agentation.com) (dev-mode annotation toolbar)
 - Deployed via GitHub Pages
 
+## Templates
+
+Starter templates for creating branded documents. Make a copy and go to town.
+
+- [Google Docs](https://docs.google.com/document/d/1UxHglmxxWhBQggPvAas5ooGCgDCh_eAgWK-9GxtV1Bs/edit?tab=t.0#heading=h.e2b3mork447t) — Starter document template
+
 ## Development
 
 ```bash
