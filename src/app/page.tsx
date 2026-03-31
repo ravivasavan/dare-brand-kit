@@ -346,6 +346,13 @@ export default function Home() {
               <span className="text-sm font-semibold">Google Docs</span>
               <span className="text-xs opacity-60">Starter document template</span>
             </a>
+            <div
+              className="flex items-center gap-3 px-4 py-3 rounded-lg border opacity-50"
+              style={{ borderColor: "#201B1C20" }}
+            >
+              <span className="text-sm font-semibold">Google Slides</span>
+              <span className="text-xs opacity-60">Coming soon</span>
+            </div>
           </div>
         </section>
       </main>
