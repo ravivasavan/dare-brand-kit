@@ -1,87 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Chip,
-  Input,
-  TextArea,
-  Switch,
-  TabsRoot,
-  TabList,
-  Tab,
-  TabPanel,
-  Separator,
-} from "@heroui/react";
 
 const colors = [
-  {
-    name: "White",
-    hex: "#F4F2F8",
-    rgb: "244, 242, 248",
-    oklch: "96.4% 0.008 301.4",
-    bg: "#F4F2F8",
-    textDark: true,
-  },
-  {
-    name: "Black",
-    hex: "#201B1C",
-    rgb: "32, 27, 28",
-    oklch: "22.8% 0.008 4.1",
-    bg: "#201B1C",
-    textDark: false,
-  },
-  {
-    name: "Celadon",
-    hex: "#9EEBBA",
-    rgb: "158, 235, 186",
-    oklch: "87.7% 0.102 155.7",
-    bg: "#9EEBBA",
-    textDark: true,
-  },
-  {
-    name: "Peach",
-    hex: "#E7C0A2",
-    rgb: "231, 192, 162",
-    oklch: "83.4% 0.060 59.4",
-    bg: "#E7C0A2",
-    textDark: true,
-  },
-  {
-    name: "Cornflower",
-    hex: "#9CAFED",
-    rgb: "156, 175, 237",
-    oklch: "76.2% 0.092 271.0",
-    bg: "#9CAFED",
-    textDark: true,
-  },
-  {
-    name: "Olive",
-    hex: "#8CA474",
-    rgb: "140, 164, 116",
-    oklch: "68.8% 0.073 129.7",
-    bg: "#8CA474",
-    textDark: true,
-  },
-  {
-    name: "Pistachio",
-    hex: "#DDDC8F",
-    rgb: "221, 220, 143",
-    oklch: "87.8% 0.098 107.6",
-    bg: "#DDDC8F",
-    textDark: true,
-  },
-  {
-    name: "Mauve",
-    hex: "#CDC2E3",
-    rgb: "205, 194, 227",
-    oklch: "83.3% 0.047 300.6",
-    bg: "#CDC2E3",
-    textDark: true,
-  },
+  { name: "White", hex: "#F4F2F8", rgb: "244, 242, 248", oklch: "96.4% 0.008 301.4", textDark: true },
+  { name: "Black", hex: "#201B1C", rgb: "32, 27, 28", oklch: "22.8% 0.008 4.1", textDark: false },
+  { name: "Celadon", hex: "#9EEBBA", rgb: "158, 235, 186", oklch: "87.7% 0.102 155.7", textDark: true },
+  { name: "Peach", hex: "#E7C0A2", rgb: "231, 192, 162", oklch: "83.4% 0.060 59.4", textDark: true },
+  { name: "Cornflower", hex: "#9CAFED", rgb: "156, 175, 237", oklch: "76.2% 0.092 271.0", textDark: true },
+  { name: "Olive", hex: "#8CA474", rgb: "140, 164, 116", oklch: "68.8% 0.073 129.7", textDark: true },
+  { name: "Pistachio", hex: "#DDDC8F", rgb: "221, 220, 143", oklch: "87.8% 0.098 107.6", textDark: true },
+  { name: "Mauve", hex: "#CDC2E3", rgb: "205, 194, 227", oklch: "83.3% 0.047 300.6", textDark: true },
 ];
 
 const typographyScale = [
@@ -97,7 +26,9 @@ const typographyScale = [
   { name: "Detail", font: "Instrument Sans", size: "12px", lineHeight: "100%", sampleSize: "0.75rem" },
 ];
 
-function CopyButton({ value, label }: { value: string; label: string }) {
+const componentTabs = ["Buttons", "Chips", "Cards", "Inputs"] as const;
+
+function CopyButton({ value, label, textColor }: { value: string; label: string; textColor: string }) {
   const [copied, setCopied] = useState(false);
 
   const copy = () => {
@@ -109,13 +40,12 @@ function CopyButton({ value, label }: { value: string; label: string }) {
   return (
     <button
       onClick={copy}
-      title={copied ? "Copied!" : `Copy ${label}`}
       className="text-left hover:opacity-70 transition-opacity cursor-pointer"
+      style={{ color: textColor }}
     >
-      <span className="text-[10px] font-bold uppercase tracking-wide opacity-60">
+      <span className="text-[10px] font-bold uppercase tracking-wide opacity-60 block">
         {label}
       </span>
-      <br />
       <span className="text-xs font-medium">
         {copied ? "Copied!" : value}
       </span>
@@ -123,11 +53,7 @@ function CopyButton({ value, label }: { value: string; label: string }) {
   );
 }
 
-function ColorSwatch({
-  color,
-}: {
-  color: (typeof colors)[0];
-}) {
+function ColorSwatch({ color }: { color: (typeof colors)[0] }) {
   const textColor = color.textDark ? "#201B1C" : "#F4F2F8";
 
   return (
@@ -136,23 +62,25 @@ function ColorSwatch({
         {color.name}
       </span>
       <div
-        className="rounded-md p-3 flex flex-col gap-3 min-h-[140px]"
+        className="rounded-md p-3 flex flex-col gap-3"
         style={{
-          backgroundColor: color.bg,
+          backgroundColor: color.hex,
           color: textColor,
-          border:
-            color.name === "White" ? "1px solid #201B1C20" : "none",
+          border: color.name === "White" ? "1px solid #201B1C20" : "none",
+          minHeight: 140,
         }}
       >
-        <CopyButton value={color.oklch} label="OKLCH" />
-        <CopyButton value={color.hex} label="HEX" />
-        <CopyButton value={color.rgb} label="RGB" />
+        <CopyButton value={color.oklch} label="OKLCH" textColor={textColor} />
+        <CopyButton value={color.hex} label="HEX" textColor={textColor} />
+        <CopyButton value={color.rgb} label="RGB" textColor={textColor} />
       </div>
     </div>
   );
 }
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState<(typeof componentTabs)[number]>("Buttons");
+
   return (
     <div
       className="min-h-screen"
@@ -185,7 +113,7 @@ export default function Home() {
           </div>
         </section>
 
-        <Separator style={{ backgroundColor: "#201B1C20" }} />
+        <hr style={{ borderColor: "#201B1C20" }} />
 
         {/* Typography */}
         <section>
@@ -209,11 +137,11 @@ export default function Home() {
                   </p>
                 </div>
                 <p
-                  className="leading-none"
                   style={{
-                    fontFamily: t.font === "FK Screamer"
-                      ? "var(--font-fk-screamer)"
-                      : "var(--font-instrument-sans)",
+                    fontFamily:
+                      t.font === "FK Screamer"
+                        ? "var(--font-fk-screamer)"
+                        : "var(--font-instrument-sans)",
                     fontSize: t.sampleSize,
                     lineHeight: t.lineHeight,
                     textTransform: t.name === "Detail" ? "uppercase" : "none",
@@ -223,14 +151,16 @@ export default function Home() {
                     ? "Heading over two lines."
                     : t.name === "Detail"
                       ? "Detail over two lines"
-                      : `${t.name.replace("Body ", "").charAt(0).toUpperCase() + t.name.replace("Body ", "").slice(1)} over two lines.`}
+                      : t.name === "Caption"
+                        ? "Caption over two lines."
+                        : `${t.name.replace("Body ", "")} over two lines.`}
                 </p>
               </div>
             ))}
           </div>
         </section>
 
-        <Separator style={{ backgroundColor: "#201B1C20" }} />
+        <hr style={{ borderColor: "#201B1C20" }} />
 
         {/* Components */}
         <section>
@@ -241,107 +171,149 @@ export default function Home() {
             Components
           </h2>
 
-          <TabsRoot defaultSelectedKey="buttons" aria-label="Component examples">
-            <TabList className="border-b border-[#201B1C20] mb-6">
-              <Tab id="buttons">Buttons</Tab>
-              <Tab id="chips">Chips</Tab>
-              <Tab id="cards">Cards</Tab>
-              <Tab id="inputs">Inputs</Tab>
-            </TabList>
+          {/* Tab bar */}
+          <div
+            className="flex gap-1 mb-8 border-b"
+            style={{ borderColor: "#201B1C20" }}
+          >
+            {componentTabs.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className="px-4 py-2 text-sm font-medium transition-colors cursor-pointer"
+                style={{
+                  color: activeTab === tab ? "#293E14" : "#201B1C80",
+                  borderBottom: activeTab === tab ? "2px solid #293E14" : "2px solid transparent",
+                  fontWeight: activeTab === tab ? 700 : 500,
+                }}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
 
-            <TabPanel id="buttons">
-              <div className="space-y-6">
-                <div className="flex flex-wrap gap-3">
-                  {colors.filter((c) => c.name !== "White").map((c) => (
-                    <Button
-                      key={c.name}
-                      className="font-semibold"
-                      style={{
-                        backgroundColor: c.bg,
-                        color: c.textDark ? "#201B1C" : "#F4F2F8",
-                      }}
-                    >
-                      {c.name}
-                    </Button>
-                  ))}
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {colors.filter((c) => c.name !== "White").map((c) => (
-                    <Button
-                      key={c.name}
-                      variant="outline"
-                      className="font-semibold"
-                      style={{
-                        borderColor: c.bg,
-                        color: c.name === "Black" ? "#201B1C" : c.bg,
-                      }}
-                    >
-                      {c.name}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            </TabPanel>
-
-            <TabPanel id="chips">
+          {/* Buttons */}
+          {activeTab === "Buttons" && (
+            <div className="space-y-6">
+              <p className="text-xs font-bold uppercase tracking-wide opacity-60 mb-3">Solid</p>
               <div className="flex flex-wrap gap-3">
                 {colors.filter((c) => c.name !== "White").map((c) => (
-                  <Chip
+                  <button
                     key={c.name}
+                    className="px-5 py-2.5 rounded-lg text-sm font-semibold transition-opacity hover:opacity-80"
                     style={{
-                      backgroundColor: c.bg,
+                      backgroundColor: c.hex,
                       color: c.textDark ? "#201B1C" : "#F4F2F8",
                     }}
                   >
                     {c.name}
-                  </Chip>
+                  </button>
                 ))}
               </div>
-            </TabPanel>
+              <p className="text-xs font-bold uppercase tracking-wide opacity-60 mb-3">Outline</p>
+              <div className="flex flex-wrap gap-3">
+                {colors.filter((c) => c.name !== "White").map((c) => (
+                  <button
+                    key={c.name}
+                    className="px-5 py-2.5 rounded-lg text-sm font-semibold border-2 transition-opacity hover:opacity-80 bg-transparent"
+                    style={{
+                      borderColor: c.hex,
+                      color: c.name === "Black" ? "#201B1C" : c.hex,
+                    }}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
-            <TabPanel id="cards">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {colors
-                  .filter((c) => !["White", "Black"].includes(c.name))
-                  .map((c) => (
-                    <Card
-                      key={c.name}
-                      className="border-none"
-                      style={{ backgroundColor: c.bg }}
+          {/* Chips */}
+          {activeTab === "Chips" && (
+            <div className="flex flex-wrap gap-3">
+              {colors.filter((c) => c.name !== "White").map((c) => (
+                <span
+                  key={c.name}
+                  className="px-3 py-1 rounded-full text-xs font-semibold"
+                  style={{
+                    backgroundColor: c.hex,
+                    color: c.textDark ? "#201B1C" : "#F4F2F8",
+                  }}
+                >
+                  {c.name}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Cards */}
+          {activeTab === "Cards" && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {colors
+                .filter((c) => !["White", "Black"].includes(c.name))
+                .map((c) => (
+                  <div
+                    key={c.name}
+                    className="rounded-xl p-6"
+                    style={{ backgroundColor: c.hex }}
+                  >
+                    <h3
+                      className="text-xl mb-2"
+                      style={{
+                        fontFamily: "var(--font-fk-screamer)",
+                        color: "#201B1C",
+                      }}
                     >
-                      <CardHeader>
-                        <h3
-                          className="text-xl"
-                          style={{
-                            fontFamily: "var(--font-fk-screamer)",
-                            color: "#201B1C",
-                          }}
-                        >
-                          {c.name}
-                        </h3>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-sm" style={{ color: "#201B1C" }}>
-                          A card component using the {c.name.toLowerCase()} colour
-                          token as its background. HEX {c.hex}.
-                        </p>
-                      </CardContent>
-                    </Card>
-                  ))}
-              </div>
-            </TabPanel>
+                      {c.name}
+                    </h3>
+                    <p className="text-sm" style={{ color: "#201B1C" }}>
+                      A card using the {c.name.toLowerCase()} colour token as
+                      its background. HEX {c.hex}.
+                    </p>
+                  </div>
+                ))}
+            </div>
+          )}
 
-            <TabPanel id="inputs">
-              <div className="max-w-md space-y-4">
-                <Input placeholder="Enter your name" aria-label="Name" />
-                <TextArea placeholder="Write a message" aria-label="Message" />
-                <div className="flex items-center gap-3">
-                  <Switch />
-                  <span className="text-sm">Toggle option</span>
-                </div>
+          {/* Inputs */}
+          {activeTab === "Inputs" && (
+            <div className="max-w-md space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wide opacity-60 mb-1">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your name"
+                  className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none transition-colors"
+                  style={{
+                    borderColor: "#201B1C30",
+                    backgroundColor: "transparent",
+                    color: "#201B1C",
+                  }}
+                  onFocus={(e) => (e.target.style.borderColor = "#293E14")}
+                  onBlur={(e) => (e.target.style.borderColor = "#201B1C30")}
+                />
               </div>
-            </TabPanel>
-          </TabsRoot>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wide opacity-60 mb-1">
+                  Message
+                </label>
+                <textarea
+                  placeholder="Write a message"
+                  rows={4}
+                  className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none transition-colors resize-none"
+                  style={{
+                    borderColor: "#201B1C30",
+                    backgroundColor: "transparent",
+                    color: "#201B1C",
+                  }}
+                  onFocus={(e) => (e.target.style.borderColor = "#293E14")}
+                  onBlur={(e) => (e.target.style.borderColor = "#201B1C30")}
+                />
+              </div>
+            </div>
+          )}
         </section>
       </main>
     </div>
