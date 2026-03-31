@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="light">
       <body
         className={`${instrumentSans.variable} ${fkScreamer.variable} font-sans antialiased`}
         style={{ fontFamily: "var(--font-instrument-sans), sans-serif" }}
