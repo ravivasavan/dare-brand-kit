@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Instrument_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import { Providers } from "./providers";
+import { Agentation } from "./agentation";
 import "./globals.css";
 
 const instrumentSans = Instrument_Sans({
@@ -32,6 +33,7 @@ export default function RootLayout({
         style={{ fontFamily: "var(--font-instrument-sans), sans-serif" }}
       >
         <Providers>{children}</Providers>
+        {process.env.NODE_ENV === "development" && <Agentation />}
       </body>
     </html>
   );

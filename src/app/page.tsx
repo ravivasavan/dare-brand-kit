@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Copy, Check } from "@phosphor-icons/react";
 
 const colors = [
   { name: "White", hex: "#F4F2F8", rgb: "244, 242, 248", oklch: "96.4% 0.008 301.4", textDark: true },
@@ -46,8 +47,12 @@ function CopyButton({ value, label, textColor }: { value: string; label: string;
       <span className="text-[10px] font-bold uppercase tracking-wide opacity-60 block">
         {label}
       </span>
-      <span className="text-xs font-medium">
-        {copied ? "Copied!" : value}
+      <span className="text-xs font-medium inline-flex items-center gap-1">
+        {copied ? (
+          <>Copied! <Check size={12} weight="bold" /></>
+        ) : (
+          <>{value} <Copy size={12} /></>
+        )}
       </span>
     </button>
   );
@@ -88,24 +93,24 @@ export default function Home() {
     >
       {/* Header */}
       <header className="px-8 pt-12 pb-8">
-        <h1
-          className="text-6xl tracking-tight"
+        <h2
+          className="text-6xl uppercase font-bold"
           style={{ fontFamily: "var(--font-fk-screamer)" }}
         >
           Dare
-        </h1>
+        </h2>
         <p className="mt-2 text-lg opacity-60">Brand Kit</p>
       </header>
 
       <main className="px-8 pb-16 space-y-16">
         {/* Colours */}
         <section>
-          <h2
-            className="text-3xl mb-6"
+          <h4
+            className="text-3xl mb-6 uppercase font-bold"
             style={{ fontFamily: "var(--font-fk-screamer)" }}
           >
             Colours
-          </h2>
+          </h4>
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
             {colors.map((c) => (
               <ColorSwatch key={c.name} color={c} />
@@ -117,17 +122,18 @@ export default function Home() {
 
         {/* Typography */}
         <section>
-          <h2
-            className="text-3xl mb-6"
+          <h4
+            className="text-3xl mb-6 uppercase font-bold"
             style={{ fontFamily: "var(--font-fk-screamer)" }}
           >
             Typography
-          </h2>
-          <div className="space-y-8">
+          </h4>
+          <div>
             {typographyScale.map((t) => (
               <div
                 key={t.name}
-                className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-4 items-baseline"
+                className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-4 items-start py-8 min-h-[120px]"
+                style={{ borderTop: "1px solid rgba(32, 27, 28, 0.2)" }}
               >
                 <div className="space-y-1">
                   <p className="text-sm font-bold">{t.name}</p>
@@ -143,8 +149,11 @@ export default function Home() {
                         ? "var(--font-fk-screamer)"
                         : "var(--font-instrument-sans)",
                     fontSize: t.sampleSize,
-                    lineHeight: t.lineHeight,
-                    textTransform: t.name === "Detail" ? "uppercase" : "none",
+                    lineHeight: t.font === "FK Screamer" ? "0.85" : t.lineHeight,
+                    textTransform: t.font === "FK Screamer" || t.name === "Detail" ? "uppercase" : "none",
+                    fontWeight: t.font === "FK Screamer" ? 700 : undefined,
+                    paddingTop: 0,
+                    marginTop: 0,
                   }}
                 >
                   {t.font === "FK Screamer"
@@ -164,12 +173,12 @@ export default function Home() {
 
         {/* Components */}
         <section>
-          <h2
-            className="text-3xl mb-6"
+          <h4
+            className="text-3xl mb-6 uppercase font-bold"
             style={{ fontFamily: "var(--font-fk-screamer)" }}
           >
             Components
-          </h2>
+          </h4>
 
           {/* Tab bar */}
           <div
@@ -258,7 +267,7 @@ export default function Home() {
                     style={{ backgroundColor: c.hex }}
                   >
                     <h3
-                      className="text-xl mb-2"
+                      className="text-xl mb-2 uppercase font-bold"
                       style={{
                         fontFamily: "var(--font-fk-screamer)",
                         color: "#201B1C",
