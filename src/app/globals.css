@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 4rem;
+}
+
 @font-face {
   font-family: "FK Screamer";
   src: url("../fonts/FKScreamer.woff2") format("woff2");

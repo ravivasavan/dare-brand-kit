@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Sans } from "next/font/google";
+import { Instrument_Sans, Anton } from "next/font/google";
 import localFont from "next/font/local";
 import { Providers } from "./providers";
 import { Agentation } from "./agentation";
@@ -16,6 +16,12 @@ const fkScreamer = localFont({
   display: "swap",
 });
 
+const anton = Anton({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-anton",
+});
+
 export const metadata: Metadata = {
   title: "Dare Brand Kit",
   description: "Interactive brand styleguide for Dare",
@@ -29,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="light">
       <body
-        className={`${instrumentSans.variable} ${fkScreamer.variable} font-sans antialiased`}
+        className={`${instrumentSans.variable} ${fkScreamer.variable} ${anton.variable} font-sans antialiased`}
         style={{ fontFamily: "var(--font-instrument-sans), sans-serif" }}
       >
         <Providers>{children}</Providers>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Check } from "@phosphor-icons/react";
+import { Copy, Check, ArrowRight } from "@phosphor-icons/react";
 
 const colors = [
   { name: "White", hex: "#F4F2F8", rgb: "244, 242, 248", oklch: "96.4% 0.008 301.4", textDark: true },
@@ -15,16 +15,16 @@ const colors = [
 ];
 
 const typographyScale = [
-  { name: "Heading / H1", font: "FK Screamer", size: "164px", lineHeight: "100%", sampleSize: "clamp(3rem, 8vw, 10.25rem)" },
-  { name: "Heading / H2", font: "FK Screamer", size: "124px", lineHeight: "100%", sampleSize: "clamp(2.5rem, 6vw, 7.75rem)" },
-  { name: "Heading / H3", font: "FK Screamer", size: "80px", lineHeight: "100%", sampleSize: "clamp(2rem, 4vw, 5rem)" },
-  { name: "Heading / H4", font: "FK Screamer", size: "48px", lineHeight: "100%", sampleSize: "clamp(1.5rem, 3vw, 3rem)" },
-  { name: "Heading / H5", font: "FK Screamer", size: "32px", lineHeight: "100%", sampleSize: "clamp(1.25rem, 2vw, 2rem)" },
-  { name: "Body Large", font: "Instrument Sans", size: "48px", lineHeight: "120%", sampleSize: "clamp(1.5rem, 3vw, 3rem)" },
-  { name: "Body Regular", font: "Instrument Sans", size: "32px", lineHeight: "120%", sampleSize: "clamp(1.25rem, 2vw, 2rem)" },
-  { name: "Body Small", font: "Instrument Sans", size: "24px", lineHeight: "120%", sampleSize: "clamp(1rem, 1.5vw, 1.5rem)" },
-  { name: "Caption", font: "Instrument Sans", size: "16px", lineHeight: "120%", sampleSize: "1rem" },
-  { name: "Detail", font: "Instrument Sans", size: "12px", lineHeight: "100%", sampleSize: "0.75rem" },
+  { name: "Heading / H1", font: "FK Screamer", size: "164px", lineHeight: "100%", sampleSize: "clamp(3rem, 8vw, 10.25rem)", fallback: true },
+  { name: "Heading / H2", font: "FK Screamer", size: "124px", lineHeight: "100%", sampleSize: "clamp(2.5rem, 6vw, 7.75rem)", fallback: true },
+  { name: "Heading / H3", font: "FK Screamer", size: "80px", lineHeight: "100%", sampleSize: "clamp(2rem, 4vw, 5rem)", fallback: true },
+  { name: "Heading / H4", font: "FK Screamer", size: "48px", lineHeight: "100%", sampleSize: "clamp(1.5rem, 3vw, 3rem)", fallback: true },
+  { name: "Heading / H5", font: "FK Screamer", size: "32px", lineHeight: "100%", sampleSize: "clamp(1.25rem, 2vw, 2rem)", fallback: true },
+  { name: "Body Large", font: "Instrument Sans", size: "48px", lineHeight: "120%", sampleSize: "clamp(1.5rem, 3vw, 3rem)", fallback: false },
+  { name: "Body Regular", font: "Instrument Sans", size: "32px", lineHeight: "120%", sampleSize: "clamp(1.25rem, 2vw, 2rem)", fallback: false },
+  { name: "Body Small", font: "Instrument Sans", size: "24px", lineHeight: "120%", sampleSize: "clamp(1rem, 1.5vw, 1.5rem)", fallback: false },
+  { name: "Caption", font: "Instrument Sans", size: "16px", lineHeight: "120%", sampleSize: "1rem", fallback: false },
+  { name: "Detail", font: "Instrument Sans", size: "12px", lineHeight: "100%", sampleSize: "0.75rem", fallback: false },
 ];
 
 const componentTabs = ["Buttons", "Chips", "Cards", "Inputs"] as const;
@@ -85,33 +85,52 @@ function ColorSwatch({ color }: { color: (typeof colors)[0] }) {
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<(typeof componentTabs)[number]>("Buttons");
+  const [showAnton, setShowAnton] = useState(false);
 
   return (
     <div
       className="min-h-screen"
       style={{ backgroundColor: "#F4F2F8", color: "#201B1C" }}
     >
-      {/* Header */}
-      <header className="px-8 pt-12 pb-8">
-        <h2
-          className="text-6xl uppercase font-bold"
-          style={{ fontFamily: "var(--font-fk-screamer)" }}
+      {/* Floating navbar */}
+      <nav
+        className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 px-2 py-1.5 rounded-full shadow-lg backdrop-blur-md"
+        style={{ backgroundColor: "rgba(32, 27, 28, 0.9)" }}
+      >
+        <span
+          className="text-lg uppercase font-bold px-3"
+          style={{ fontFamily: "var(--font-fk-screamer)", color: "#F4F2F8" }}
         >
           Dare
-        </h2>
-        <p className="mt-2 text-lg opacity-60">Brand Kit</p>
-      </header>
+        </span>
+        <span className="text-[#F4F2F880] text-xs">|</span>
+        {[
+          { label: "Colours", id: "colours" },
+          { label: "Typography", id: "typography" },
+          { label: "Components", id: "components" },
+          { label: "Templates", id: "templates" },
+        ].map((item) => (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            className="px-3 py-1 text-xs font-medium rounded-full transition-colors hover:bg-white/10"
+            style={{ color: "#F4F2F8" }}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
 
-      <main className="px-8 pb-16 space-y-16">
+      <main className="px-8 pt-20 pb-16 space-y-16">
         {/* Colours */}
-        <section>
+        <section id="colours">
           <h4
             className="text-3xl mb-6 uppercase font-bold"
             style={{ fontFamily: "var(--font-fk-screamer)" }}
           >
             Colours
           </h4>
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4">
             {colors.map((c) => (
               <ColorSwatch key={c.name} color={c} />
             ))}
@@ -121,13 +140,34 @@ export default function Home() {
         <hr style={{ borderColor: "#201B1C20" }} />
 
         {/* Typography */}
-        <section>
+        <section id="typography">
           <h4
             className="text-3xl mb-6 uppercase font-bold"
             style={{ fontFamily: "var(--font-fk-screamer)" }}
           >
             Typography
           </h4>
+          <div
+            className="inline-flex items-start gap-3 p-4 rounded-lg mb-8 text-sm"
+            style={{ backgroundColor: "#201B1C08", border: "1px solid rgba(32, 27, 28, 0.1)" }}
+          >
+            <div className="flex-1">
+              <p>If creating documents or slides in Google Workspace, please use Anton in place of FK Screamer.</p>
+              <p className="mt-1 opacity-60 text-xs">Toggle to show Anton instead of FK Screamer</p>
+            </div>
+            <button
+              onClick={() => setShowAnton(!showAnton)}
+              className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors"
+              style={{ backgroundColor: showAnton ? "#293E14" : "#201B1C20" }}
+            >
+              <span
+                className="inline-block h-5 w-5 rounded-full bg-white shadow transition-transform"
+                style={{
+                  transform: showAnton ? "translate(21px, 2px)" : "translate(2px, 2px)",
+                }}
+              />
+            </button>
+          </div>
           <div>
             {typographyScale.map((t) => (
               <div
@@ -137,7 +177,9 @@ export default function Home() {
               >
                 <div className="space-y-1">
                   <p className="text-sm font-bold">{t.name}</p>
-                  <p className="text-xs opacity-60">{t.font}</p>
+                  <p className="text-xs opacity-60">
+                    {t.fallback && showAnton ? "Anton" : t.font}
+                  </p>
                   <p className="text-xs opacity-60">
                     {t.size} / {t.lineHeight}
                   </p>
@@ -146,12 +188,14 @@ export default function Home() {
                   style={{
                     fontFamily:
                       t.font === "FK Screamer"
-                        ? "var(--font-fk-screamer)"
+                        ? showAnton
+                          ? "var(--font-anton)"
+                          : "var(--font-fk-screamer)"
                         : "var(--font-instrument-sans)",
                     fontSize: t.sampleSize,
                     lineHeight: t.font === "FK Screamer" ? "0.85" : t.lineHeight,
                     textTransform: t.font === "FK Screamer" || t.name === "Detail" ? "uppercase" : "none",
-                    fontWeight: t.font === "FK Screamer" ? 700 : undefined,
+                    fontWeight: t.font === "FK Screamer" ? (showAnton ? 400 : 700) : undefined,
                     paddingTop: 0,
                     marginTop: 0,
                   }}
@@ -172,7 +216,7 @@ export default function Home() {
         <hr style={{ borderColor: "#201B1C20" }} />
 
         {/* Components */}
-        <section>
+        <section id="components">
           <h4
             className="text-3xl mb-6 uppercase font-bold"
             style={{ fontFamily: "var(--font-fk-screamer)" }}
@@ -267,9 +311,11 @@ export default function Home() {
                     style={{ backgroundColor: c.hex }}
                   >
                     <h3
-                      className="text-xl mb-2 uppercase font-bold"
+                      className="mb-2 uppercase font-bold"
                       style={{
                         fontFamily: "var(--font-fk-screamer)",
+                        fontSize: "32px",
+                        lineHeight: "0.85",
                         color: "#201B1C",
                       }}
                     >
@@ -328,30 +374,39 @@ export default function Home() {
         <hr style={{ borderColor: "#201B1C20" }} />
 
         {/* Templates */}
-        <section>
+        <section id="templates">
           <h4
             className="text-3xl mb-6 uppercase font-bold"
             style={{ fontFamily: "var(--font-fk-screamer)" }}
           >
             Templates
           </h4>
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <a
               href="https://docs.google.com/document/d/1UxHglmxxWhBQggPvAas5ooGCgDCh_eAgWK-9GxtV1Bs/edit?tab=t.0#heading=h.e2b3mork447t"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg border transition-colors hover:border-[#293E14]"
+              className="group flex items-center justify-between p-6 rounded-xl border transition-colors hover:border-[#293E14]"
               style={{ borderColor: "#201B1C20" }}
             >
-              <span className="text-sm font-semibold">Google Docs</span>
-              <span className="text-xs opacity-60">Starter document template</span>
+              <div>
+                <span className="text-sm font-semibold block">Google Docs</span>
+                <span className="text-xs opacity-60">Starter document template</span>
+              </div>
+              <ArrowRight
+                size={20}
+                className="opacity-40 transition-all group-hover:opacity-100 group-hover:translate-x-1"
+              />
             </a>
             <div
-              className="flex items-center gap-3 px-4 py-3 rounded-lg border opacity-50"
+              className="flex items-center justify-between p-6 rounded-xl border opacity-50"
               style={{ borderColor: "#201B1C20" }}
             >
-              <span className="text-sm font-semibold">Google Slides</span>
-              <span className="text-xs opacity-60">Coming soon</span>
+              <div>
+                <span className="text-sm font-semibold block">Google Slides</span>
+                <span className="text-xs opacity-60">Coming soon</span>
+              </div>
+              <ArrowRight size={20} className="opacity-20" />
             </div>
           </div>
         </section>
