@@ -84,10 +84,10 @@ def fit_heading(
 def heavy_fk(size: int) -> ImageFont.FreeTypeFont:
     f = font(FK, size)
     try:
-        f.set_variation_by_name("Black")
+        f.set_variation_by_name("Bold")
     except Exception:
         try:
-            f.set_variation_by_axes([900])
+            f.set_variation_by_axes([700])
         except Exception:
             pass
     return f
@@ -266,7 +266,7 @@ SLIDES = [
             "After the speech, people clap and hand wave.",
         ],
         "bg": COLORS["olive"],
-        "fg": COLORS["white"],
+        "fg": COLORS["black"],
         "accent": COLORS["pistachio"],
         "shape": "pill",
     },
