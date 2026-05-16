@@ -81,6 +81,44 @@ def fit_heading(
     return f, lines, line_h
 
 
+def heavy_fk(size: int) -> ImageFont.FreeTypeFont:
+    f = font(FK, size)
+    try:
+        f.set_variation_by_name("Black")
+    except Exception:
+        try:
+            f.set_variation_by_axes([900])
+        except Exception:
+            pass
+    return f
+
+
+def fit_heading_heavy(
+    draw: ImageDraw.ImageDraw,
+    text: str,
+    max_w: int,
+    max_h: int,
+    start: int = 170,
+    min_size: int = 70,
+) -> tuple[ImageFont.FreeTypeFont, list[str], int]:
+    size = start
+    while size >= min_size:
+        f = heavy_fk(size)
+        lines = wrap(draw, text, f, max_w)
+        ascent, descent = f.getmetrics()
+        line_h = int((ascent + descent) * 1.0)
+        total_h = line_h * len(lines)
+        widest = max((draw.textbbox((0, 0), ln, font=f)[2] for ln in lines), default=0)
+        if total_h <= max_h and widest <= max_w:
+            return f, lines, line_h
+        size -= 4
+    f = heavy_fk(min_size)
+    lines = wrap(draw, text, f, max_w)
+    ascent, descent = f.getmetrics()
+    line_h = int((ascent + descent) * 1.0)
+    return f, lines, line_h
+
+
 def draw_slide(
     index: int,
     total: int,
@@ -88,14 +126,12 @@ def draw_slide(
     bullets: list[str],
     bg: str,
     fg: str,
-    accent: str,
-    accent_shape: str = "circle",
 ) -> Image.Image:
     img = Image.new("RGB", (W, H), bg)
     d = ImageDraw.Draw(img)
 
     # Top label row
-    label_font = font(SANS_BOLD, 22)
+    label_font = font(SANS_BOLD, 24)
     label = "DARE  •  GALLERY OPENING — SOCIAL SCRIPT"
     d.text((PAD, PAD), label, font=label_font, fill=fg)
 
@@ -105,43 +141,14 @@ def draw_slide(
     d.text((W - PAD - (bbox[2] - bbox[0]), PAD), counter, font=label_font, fill=fg)
 
     # Divider line
-    line_y = PAD + 50
+    line_y = PAD + 54
     d.line([(PAD, line_y), (W - PAD, line_y)], fill=fg, width=2)
 
-    # Accent shape (top-right corner of content area)
-    if accent_shape == "circle":
-        r = 90
-        d.ellipse(
-            [W - PAD - r * 2, line_y + 40, W - PAD, line_y + 40 + r * 2],
-            fill=accent,
-        )
-    elif accent_shape == "square":
-        s = 180
-        d.rectangle(
-            [W - PAD - s, line_y + 40, W - PAD, line_y + 40 + s],
-            fill=accent,
-        )
-    elif accent_shape == "pill":
-        d.rounded_rectangle(
-            [W - PAD - 220, line_y + 40, W - PAD, line_y + 40 + 110],
-            radius=55,
-            fill=accent,
-        )
-    elif accent_shape == "triangle":
-        d.polygon(
-            [
-                (W - PAD - 180, line_y + 220),
-                (W - PAD, line_y + 220),
-                (W - PAD - 90, line_y + 40),
-            ],
-            fill=accent,
-        )
-
     # Heading
-    heading_top = line_y + 260
-    max_h_heading = 360
-    hf, hlines, line_h = fit_heading(
-        d, heading.upper(), FK, max_w=W - PAD * 2, max_h=max_h_heading
+    heading_top = line_y + 80
+    max_h_heading = 440
+    hf, hlines, line_h = fit_heading_heavy(
+        d, heading.upper(), max_w=W - PAD * 2, max_h=max_h_heading
     )
     y = heading_top
     for ln in hlines:
@@ -149,27 +156,26 @@ def draw_slide(
         y += int(line_h * 0.95)
 
     # Bullets
-    body_font = font(SANS_REG, 32)
+    body_font = font(SANS_REG, 40)
     bullet_x = PAD
-    text_x = PAD + 36
+    text_x = PAD + 44
     max_text_w = W - PAD - text_x
-    y += 40
+    y += 60
     for b in bullets:
         lines = wrap(d, b, body_font, max_text_w)
-        # bullet dot
-        dot_r = 6
-        first_line_y = y + 14
+        dot_r = 8
+        first_line_y = y + 18
         d.ellipse(
             [bullet_x, first_line_y, bullet_x + dot_r * 2, first_line_y + dot_r * 2],
             fill=fg,
         )
-        for i, ln in enumerate(lines):
+        for ln in lines:
             d.text((text_x, y), ln, font=body_font, fill=fg)
             y += int(body_font.size * 1.25)
-        y += 14  # gap between bullets
+        y += 18
 
     # Footer / swipe hint
-    footer_font = font(SANS_BOLD, 22)
+    footer_font = font(SANS_BOLD, 24)
     if index < total:
         footer_text = "SWIPE  →"
     else:
@@ -181,10 +187,6 @@ def draw_slide(
         font=footer_font,
         fill=fg,
     )
-
-    # tiny tag bottom-left
-    tag_font = font(SANS_BOLD, 22)
-    d.text((PAD, H - PAD - 22), "AUSLAN  •  EN", font=tag_font, fill=fg)
 
     return img
 
@@ -297,9 +299,12 @@ SLIDES = [
 
 
 def main() -> None:
-    total = len(SLIDES) + 1  # +1 for the Auslan still slide the user designs
-    # We render slides 2..total (positions index 2..9)
-    for i, s in enumerate(SLIDES, start=2):
+    # Carousel is 10 slides total:
+    #   01 — Auslan still (designed by hand)
+    #   02 — Auslan video (designed by hand)
+    #   03..10 — English script slides generated below
+    total = len(SLIDES) + 2
+    for i, s in enumerate(SLIDES, start=3):
         img = draw_slide(
             index=i,
             total=total,
@@ -307,8 +312,6 @@ def main() -> None:
             bullets=s["bullets"],
             bg=s["bg"],
             fg=s["fg"],
-            accent=s["accent"],
-            accent_shape=s["shape"],
         )
         slug = s["heading"].lower().replace(" ", "-").replace("'", "")
         path = OUT / f"{i:02d}-{slug}.png"
