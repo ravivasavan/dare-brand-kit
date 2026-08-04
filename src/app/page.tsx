@@ -73,7 +73,9 @@ function SiteHeader() {
 
   useEffect(() => {
     const onScroll = () => {
-      setCondensed(window.scrollY > 120);
+      // low threshold: every anchor landing sits past it, so nav clicks always
+      // settle in the condensed state instead of straddling the boundary
+      setCondensed(window.scrollY > 24);
       // scrollspy: the last section whose top has passed the sticky header
       let current: string | null = null;
       for (const n of navItems) {
@@ -108,8 +110,9 @@ function SiteHeader() {
 
   return (
     <>
-      <header className={`site-header${condensed ? " is-condensed" : ""}`}>
-        <div className="wrap">
+      <div className="header-slot">
+        <header className={`site-header${condensed ? " is-condensed" : ""}`}>
+          <div className="wrap">
           <div className="header-grid g12 items-center gap-y-3">
             <a
               href="/"
@@ -143,8 +146,9 @@ function SiteHeader() {
               </span>
             </button>
           </div>
-        </div>
-      </header>
+          </div>
+        </header>
+      </div>
 
       <div
         id="mobile-nav"

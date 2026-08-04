@@ -39,9 +39,15 @@ body {
 .fk { font-family: var(--font-display); font-weight: 700; line-height: 1; letter-spacing: 0.01em; }
 
 /* sticky header: full size at the top of the page, condenses to a slim bar
-   once scrolled past the threshold (see SiteHeader in page.tsx) */
+   once scrolled past the threshold (see SiteHeader in page.tsx).
+   The slot reserves the full-size header's height in the document flow while
+   the header itself is position:fixed — condensing must never shift the page,
+   or smooth-scrolled anchors chase a moving target and the state oscillates. */
+.header-slot {
+  height: calc(2 * clamp(1.5rem, 3vw, 3rem) + clamp(2.25rem, 3.5vw, 4rem) + 1px);
+}
 .site-header {
-  position: sticky; top: 0; z-index: 900;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 900;
   background: #f4f2f8; color: #201b1c;
   border-bottom: 1px solid transparent;
   transition: border-color 0.35s ease;
