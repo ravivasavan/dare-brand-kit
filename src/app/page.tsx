@@ -68,6 +68,14 @@ function CopyButton({ value, label, textColor }: { value: string; label: string;
 function SiteHeader() {
   const [navOpen, setNavOpen] = useState(false);
   const [navShown, setNavShown] = useState(false);
+  const [condensed, setCondensed] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setCondensed(window.scrollY > 120);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const openNav = () => {
     setNavShown(true);
@@ -90,16 +98,16 @@ function SiteHeader() {
 
   return (
     <>
-      <header style={{ background: "#f4f2f8", color: "#201b1c" }}>
+      <header className={`site-header${condensed ? " is-condensed" : ""}`}>
         <div className="wrap">
-          <div className="g12 items-center gap-y-3 py-[clamp(1.5rem,3vw,3rem)]">
+          <div className="header-grid g12 items-center gap-y-3">
             <a
               href="/"
-              className="col-span-6 md:col-span-3 fk nav-link text-[clamp(2.25rem,3.5vw,4rem)]"
+              className="col-span-6 md:col-span-3 fk nav-link header-brand"
             >
               Dare
             </a>
-            <nav className="hidden md:col-span-9 md:flex flex-wrap items-center gap-x-[clamp(1.5rem,3vw,3.75rem)] gap-y-1 md:justify-end fk text-[clamp(1.75rem,3vw,4rem)]">
+            <nav className="header-nav hidden md:col-span-9 md:flex flex-wrap items-center gap-x-[clamp(1.5rem,3vw,3.75rem)] gap-y-1 md:justify-end fk">
               {navItems.map((n) => (
                 <a key={n.id} href={`#${n.id}`} className="nav-link">
                   {n.label}
@@ -339,7 +347,12 @@ export default function Home() {
                           : "var(--font-fk-screamer)"
                         : "var(--font-instrument-sans)",
                     fontSize: t.sampleSize,
-                    lineHeight: t.font === "FK Screamer" ? "0.85" : t.lineHeight,
+                    lineHeight:
+                      t.font === "FK Screamer"
+                        ? showAnton
+                          ? "1"
+                          : "0.85"
+                        : t.lineHeight,
                     textTransform: t.font === "FK Screamer" || t.name === "Detail" ? "uppercase" : "none",
                     fontWeight: t.font === "FK Screamer" ? (showAnton ? 400 : 700) : undefined,
                     paddingTop: 0,
