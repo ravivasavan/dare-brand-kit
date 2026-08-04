@@ -2,7 +2,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 4rem;
+  scroll-padding-top: 1rem;
 }
 
 @font-face {
@@ -10,4 +10,93 @@ html {
   src: url("../fonts/FKScreamer.woff2") format("woff2");
   font-weight: 100 900;
   font-display: swap;
+}
+
+/* font tokens — same names as the main site (global.css in dare-website).
+   Declared on body because the next/font variables they reference are set
+   by the body className (var() in a custom property resolves per-element). */
+body {
+  --font-display: var(--font-fk-screamer), var(--font-anton), system-ui, sans-serif;
+  --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
+}
+
+/* ---- layout system: 1440 max width, 12-col grid, 20px gutters ---- */
+/* (mirrors the main site — keep in sync with dare-website global.css) */
+.wrap {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+.g12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 20px;
+}
+.g12.rows { row-gap: clamp(1.5rem, 4vh, 3rem); }
+
+/* FK Screamer display, mixed-case (header, nav) — no uppercase transform */
+.fk { font-family: var(--font-display); font-weight: 700; line-height: 1; letter-spacing: 0.01em; }
+
+/* header/nav links: no underline, opacity shift on hover */
+.nav-link { text-decoration: none; transition: opacity 0.15s ease; }
+.nav-link:hover { opacity: 0.55; }
+
+/* footer links match the main site's underlined base links */
+footer a { text-decoration: underline; text-underline-offset: 2px; }
+
+/* skip-to-content link for keyboard users (visually hidden until focused) */
+.skip-link {
+  position: absolute; left: 8px; top: -48px; z-index: 1000;
+  background: #201b1c; color: #f4f2f8;
+  padding: 0.6rem 1rem; border-radius: 4px;
+}
+.skip-link:focus { top: 8px; }
+
+/* mobile nav: hamburger button + full-screen takeover */
+.nav-toggle {
+  appearance: none; background: none; border: 0; padding: 10px; margin: -10px;
+  cursor: pointer; color: #201b1c;
+}
+.nav-toggle .bars { position: relative; display: block; width: 30px; height: 18px; }
+.nav-toggle .bars span {
+  position: absolute; left: 0; width: 100%; height: 2.5px; border-radius: 2px; background: currentColor;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), opacity 0.2s ease;
+}
+.nav-toggle .bars span:nth-child(1) { top: 0; }
+.nav-toggle .bars span:nth-child(2) { top: 8px; }
+.nav-toggle .bars span:nth-child(3) { top: 16px; }
+.nav-toggle[aria-expanded='true'] {
+  position: fixed; z-index: 1100; color: #f4f2f8;
+  top: clamp(1.5rem, 3vw, 3rem); right: clamp(1.25rem, 4vw, 2.5rem);
+}
+.nav-toggle[aria-expanded='true'] .bars span:nth-child(1) { top: 8px; transform: rotate(45deg); }
+.nav-toggle[aria-expanded='true'] .bars span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded='true'] .bars span:nth-child(3) { top: 8px; transform: rotate(-45deg); }
+
+.mobile-nav {
+  position: fixed; inset: 0; z-index: 1000;
+  background: #201b1c; color: #f4f2f8;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(2rem, 8vh, 5rem) clamp(1.25rem, 6vw, 3rem);
+  opacity: 0; transition: opacity 0.3s ease;
+}
+.mobile-nav[hidden] { display: none; }
+.mobile-nav.is-open { opacity: 1; }
+.mobile-nav-list { display: flex; flex-direction: column; gap: clamp(0.75rem, 3vh, 1.75rem); }
+.mobile-nav-list a {
+  font-family: var(--font-display); font-weight: 700; line-height: 0.95;
+  font-size: clamp(2.5rem, 11vw, 4.5rem); text-transform: uppercase;
+  color: #f4f2f8; text-decoration: none;
+}
+.mobile-nav-secondary { display: flex; gap: 1.5rem; margin-top: clamp(2rem, 6vh, 3.5rem); font-family: var(--font-sans); font-weight: 500; font-size: 1.125rem; }
+.mobile-nav-secondary a { color: #f4f2f8; text-decoration: none; opacity: 0.7; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

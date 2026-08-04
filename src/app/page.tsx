@@ -1,7 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Copy, Check, ArrowRight } from "@phosphor-icons/react";
+
+const navItems = [
+  { label: "Colours", id: "colours" },
+  { label: "Typography", id: "typography" },
+  { label: "Components", id: "components" },
+  { label: "Templates", id: "templates" },
+];
 
 const colors = [
   { name: "White", hex: "#F4F2F8", rgb: "244, 242, 248", oklch: "96.4% 0.008 301.4", textDark: true },
@@ -58,11 +65,186 @@ function CopyButton({ value, label, textColor }: { value: string; label: string;
   );
 }
 
+function SiteHeader() {
+  const [navOpen, setNavOpen] = useState(false);
+  const [navShown, setNavShown] = useState(false);
+
+  const openNav = () => {
+    setNavShown(true);
+    requestAnimationFrame(() => requestAnimationFrame(() => setNavOpen(true)));
+    document.documentElement.style.overflow = "hidden";
+  };
+  const closeNav = () => {
+    setNavOpen(false);
+    document.documentElement.style.overflow = "";
+    setTimeout(() => setNavShown(false), 320);
+  };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeNav();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
+  return (
+    <>
+      <header style={{ background: "#f4f2f8", color: "#201b1c" }}>
+        <div className="wrap">
+          <div className="g12 items-center gap-y-3 py-[clamp(1.5rem,3vw,3rem)]">
+            <a
+              href="/"
+              className="col-span-6 md:col-span-3 fk nav-link text-[clamp(2.25rem,3.5vw,4rem)]"
+            >
+              Dare
+            </a>
+            <nav className="hidden md:col-span-9 md:flex flex-wrap items-center gap-x-[clamp(1.5rem,3vw,3.75rem)] gap-y-1 md:justify-end fk text-[clamp(1.75rem,3vw,4rem)]">
+              {navItems.map((n) => (
+                <a key={n.id} href={`#${n.id}`} className="nav-link">
+                  {n.label}
+                </a>
+              ))}
+            </nav>
+            <button
+              type="button"
+              className="nav-toggle col-span-6 md:hidden justify-self-end self-center"
+              aria-label={navOpen ? "Close menu" : "Open menu"}
+              aria-expanded={navOpen}
+              aria-controls="mobile-nav"
+              onClick={() => (navOpen ? closeNav() : openNav())}
+            >
+              <span className="bars" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div
+        id="mobile-nav"
+        className={`mobile-nav${navOpen ? " is-open" : ""}`}
+        aria-hidden={!navOpen}
+        hidden={!navShown}
+      >
+        <nav className="mobile-nav-list">
+          {navItems.map((n) => (
+            <a key={n.id} href={`#${n.id}`} onClick={closeNav}>
+              {n.label}
+            </a>
+          ))}
+        </nav>
+        <div className="mobile-nav-secondary">
+          <a href="https://deafartsresidency.com" rel="noopener">
+            deafartsresidency.com
+          </a>
+          <a href="https://www.instagram.com/deafartsresidency/" rel="noopener">
+            Instagram
+          </a>
+        </div>
+      </div>
+    </>
+  );
+}
+
+const ackParas = [
+  "We began and continue on the unceded lands of the Wurundjeri Woi Wurrung and Boonwurrung peoples of the Kulin Nation. We pay our respects to Elders past and present, and to young people and emerging leaders. This always was, and always will be, Aboriginal land.",
+  "We also honour deaf pioneers, young people and leaders who are helping shape the future. Their work for sign language, access, and equal rights continues to guide us.",
+];
+
+function SiteFooter() {
+  // email is split across data attributes so the address never appears in the
+  // built output (same scheme as the main site's Base.astro); assembled from
+  // the DOM at runtime, out of reach of both scrapers and the JS minifier
+  const emailRef = useRef<HTMLAnchorElement>(null);
+  useEffect(() => {
+    const a = emailRef.current;
+    if (!a) return;
+    const e = a.getAttribute("data-eu") + "@" + a.getAttribute("data-ed");
+    a.setAttribute("href", "mailto:" + e);
+    a.textContent = e;
+  }, []);
+
+  return (
+    <footer
+      style={{
+        background: "var(--footer-bg, #201b1c)",
+        color: "var(--footer-text, #f4f2f8)",
+      }}
+    >
+      <div className="wrap pt-[clamp(4rem,10vh,6rem)]">
+        <nav
+          className="flex flex-wrap items-center gap-x-8 gap-y-3 w-full"
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontWeight: 500,
+            fontSize: "clamp(1rem,1.4vw,1.25rem)",
+          }}
+        >
+          <a href="https://deafartsresidency.com/join">Join Our Newsletter</a>
+          <a href="https://www.instagram.com/deafartsresidency/" rel="noopener">
+            Instagram
+          </a>
+          <a href="https://deafartsresidency.com/privacy" className="md:ml-auto">
+            Privacy Policy
+          </a>
+        </nav>
+        <div
+          className="g12 rows mt-[clamp(2.5rem,8vh,4rem)]"
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontWeight: 500,
+            fontSize: "clamp(1rem,1.4vw,1.25rem)",
+            lineHeight: 1.5,
+          }}
+        >
+          <p className="col-span-12 md:col-span-4">
+            Deaf Arts Residency Incorporated
+            <br />
+            Association No. A0126812O
+            <br />
+            ABN 95 379 383 840
+            <br />
+            <a ref={emailRef} data-eu="hello" data-ed="deafartsresidency.com">
+              hello [at] deafartsresidency [dot] com
+            </a>
+          </p>
+          <div
+            className="col-span-12 md:col-span-8 flex flex-col gap-3 max-w-[60ch]"
+            style={{ textWrap: "pretty" }}
+          >
+            {ackParas.map((para) => (
+              <p key={para.slice(0, 24)}>{para}</p>
+            ))}
+          </div>
+        </div>
+        {/* giant DARE wordmark: same inlined Figma export as the main site,
+            fill follows footer text colour for contrast */}
+        <svg
+          viewBox="0 0 1431 796.356"
+          fill="currentColor"
+          role="img"
+          aria-label="DARE"
+          className="mt-[clamp(2rem,6vh,4rem)] block w-full"
+        >
+          <path d="M1145.08 0H1431V119.933H1300.51V333.894H1412.77V453.827H1300.51V676.423H1431V796.356H1145.08V0Z" />
+          <path d="M758.578 0H910.174C1034.9 0 1119.34 76.7572 1119.34 206.285V223.555C1119.34 314.704 1084.8 375.151 1021.47 412.57V422.165C1080.96 454.786 1096.31 497.962 1098.23 585.274L1100.15 662.031C1101.11 731.112 1105.9 761.815 1119.34 786.761V796.356H974.458C962.944 767.572 958.147 727.274 957.187 674.504L953.349 538.26C952.39 498.922 942.795 474.935 911.133 474.935V796.356H758.578V0ZM911.133 99.7843V375.151H920.728C946.633 375.151 962.944 355.002 962.944 301.272V172.704C962.944 119.933 946.633 99.7843 920.728 99.7843H911.133Z" />
+          <path d="M434.725 0H661.159L733.119 786.761V796.356H583.443L570.969 600.625H509.564L497.091 796.356H362.766V786.761L434.725 0ZM517.239 479.732H563.294L545.064 196.69H535.469L517.239 479.732Z" />
+          <path d="M0 0H145.839C281.123 0 361.718 91.1491 361.718 311.826V484.53C361.718 705.207 281.123 796.356 145.839 796.356H0V0ZM152.555 99.7843V690.815H161.19C191.893 690.815 205.325 670.666 205.325 630.368V160.231C205.325 119.933 191.893 99.7843 161.19 99.7843H152.555Z" />
+        </svg>
+      </div>
+    </footer>
+  );
+}
+
 function ColorSwatch({ color }: { color: (typeof colors)[0] }) {
   const textColor = color.textDark ? "#201B1C" : "#F4F2F8";
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 col-span-6 md:col-span-3">
       <span className="text-sm font-bold" style={{ color: "#293E14" }}>
         {color.name}
       </span>
@@ -92,36 +274,15 @@ export default function Home() {
       className="min-h-screen"
       style={{ backgroundColor: "#F4F2F8", color: "#201B1C" }}
     >
-      {/* Floating navbar */}
-      <nav
-        className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 px-2 py-1.5 rounded-full shadow-lg backdrop-blur-md"
-        style={{ backgroundColor: "rgba(32, 27, 28, 0.9)" }}
-      >
-        <span
-          className="text-lg uppercase font-bold px-3"
-          style={{ fontFamily: "var(--font-fk-screamer)", color: "#F4F2F8" }}
-        >
-          Dare
-        </span>
-        <span className="text-[#F4F2F880] text-xs">|</span>
-        {[
-          { label: "Colours", id: "colours" },
-          { label: "Typography", id: "typography" },
-          { label: "Components", id: "components" },
-          { label: "Templates", id: "templates" },
-        ].map((item) => (
-          <a
-            key={item.id}
-            href={`#${item.id}`}
-            className="px-3 py-1 text-xs font-medium rounded-full transition-colors hover:bg-white/10"
-            style={{ color: "#F4F2F8" }}
-          >
-            {item.label}
-          </a>
-        ))}
-      </nav>
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
+      <SiteHeader />
 
-      <main className="px-8 pt-20 pb-16 space-y-16">
+      <main
+        id="main"
+        className="wrap pt-[clamp(1.5rem,3vw,3rem)] pb-[clamp(4rem,8vw,6rem)] space-y-16"
+      >
         {/* Colours */}
         <section id="colours">
           <h4
@@ -130,7 +291,7 @@ export default function Home() {
           >
             Colours
           </h4>
-          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="g12">
             {colors.map((c) => (
               <ColorSwatch key={c.name} color={c} />
             ))}
@@ -172,10 +333,10 @@ export default function Home() {
             {typographyScale.map((t) => (
               <div
                 key={t.name}
-                className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-4 items-start py-8 min-h-[120px]"
+                className="g12 items-start py-8 min-h-[120px]"
                 style={{ borderTop: "1px solid rgba(32, 27, 28, 0.2)" }}
               >
-                <div className="space-y-1">
+                <div className="space-y-1 col-span-12 md:col-span-3">
                   <p className="text-sm font-bold">{t.name}</p>
                   <p className="text-xs opacity-60">
                     {t.fallback && showAnton ? "Anton" : t.font}
@@ -185,6 +346,7 @@ export default function Home() {
                   </p>
                 </div>
                 <p
+                  className="col-span-12 md:col-span-9"
                   style={{
                     fontFamily:
                       t.font === "FK Screamer"
@@ -301,13 +463,13 @@ export default function Home() {
 
           {/* Cards */}
           {activeTab === "Cards" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="g12">
               {colors
                 .filter((c) => !["White", "Black"].includes(c.name))
                 .map((c) => (
                   <div
                     key={c.name}
-                    className="rounded-xl p-6"
+                    className="rounded-xl p-6 col-span-12 sm:col-span-6 lg:col-span-4"
                     style={{ backgroundColor: c.hex }}
                   >
                     <h3
@@ -381,12 +543,12 @@ export default function Home() {
           >
             Templates
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="g12">
             <a
               href="https://docs.google.com/document/d/1UxHglmxxWhBQggPvAas5ooGCgDCh_eAgWK-9GxtV1Bs/edit?tab=t.0#heading=h.e2b3mork447t"
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center justify-between p-6 rounded-xl border transition-colors hover:border-[#293E14]"
+              className="group flex items-center justify-between p-6 rounded-xl border transition-colors hover:border-[#293E14] col-span-12 sm:col-span-6"
               style={{ borderColor: "#201B1C20" }}
             >
               <div>
@@ -399,7 +561,7 @@ export default function Home() {
               />
             </a>
             <div
-              className="flex items-center justify-between p-6 rounded-xl border opacity-50"
+              className="flex items-center justify-between p-6 rounded-xl border opacity-50 col-span-12 sm:col-span-6"
               style={{ borderColor: "#201B1C20" }}
             >
               <div>
@@ -411,6 +573,8 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }
