@@ -69,9 +69,19 @@ function SiteHeader() {
   const [navOpen, setNavOpen] = useState(false);
   const [navShown, setNavShown] = useState(false);
   const [condensed, setCondensed] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   useEffect(() => {
-    const onScroll = () => setCondensed(window.scrollY > 120);
+    const onScroll = () => {
+      setCondensed(window.scrollY > 120);
+      // scrollspy: the last section whose top has passed the sticky header
+      let current: string | null = null;
+      for (const n of navItems) {
+        const el = document.getElementById(n.id);
+        if (el && el.getBoundingClientRect().top <= 96) current = n.id;
+      }
+      setActiveSection(current);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -109,7 +119,11 @@ function SiteHeader() {
             </a>
             <nav className="header-nav hidden md:col-span-9 md:flex flex-wrap items-center gap-x-[clamp(1.5rem,3vw,3.75rem)] gap-y-1 md:justify-end fk">
               {navItems.map((n) => (
-                <a key={n.id} href={`#${n.id}`} className="nav-link">
+                <a
+                  key={n.id}
+                  href={`#${n.id}`}
+                  className={`nav-link${activeSection === n.id ? " is-active" : ""}`}
+                >
                   {n.label}
                 </a>
               ))}
@@ -140,7 +154,12 @@ function SiteHeader() {
       >
         <nav className="mobile-nav-list">
           {navItems.map((n) => (
-            <a key={n.id} href={`#${n.id}`} onClick={closeNav}>
+            <a
+              key={n.id}
+              href={`#${n.id}`}
+              onClick={closeNav}
+              className={activeSection === n.id ? "is-active" : ""}
+            >
               {n.label}
             </a>
           ))}

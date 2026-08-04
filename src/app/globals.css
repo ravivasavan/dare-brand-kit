@@ -63,9 +63,12 @@ body {
 .site-header.is-condensed .header-brand { font-size: 1.9375rem; }
 .site-header.is-condensed .header-nav { font-size: 1.5rem; }
 
-/* header/nav links: no underline, opacity shift on hover */
-.nav-link { text-decoration: none; transition: opacity 0.15s ease; }
+/* header/nav links: no underline, opacity shift on hover;
+   active section highlighted in cornflower (scrollspy) */
+.nav-link { text-decoration: none; transition: opacity 0.15s ease, color 0.2s ease; }
 .nav-link:hover { opacity: 0.55; }
+.nav-link.is-active { color: #9cafed; }
+.mobile-nav-list a.is-active { color: #9cafed; }
 
 /* footer links match the main site's underlined base links */
 footer a { text-decoration: underline; text-underline-offset: 2px; }
