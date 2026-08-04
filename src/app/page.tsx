@@ -176,24 +176,8 @@ function SiteFooter() {
       }}
     >
       <div className="wrap pt-[clamp(4rem,10vh,6rem)]">
-        <nav
-          className="flex flex-wrap items-center gap-x-8 gap-y-3 w-full"
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontWeight: 500,
-            fontSize: "clamp(1rem,1.4vw,1.25rem)",
-          }}
-        >
-          <a href="https://deafartsresidency.com/join">Join Our Newsletter</a>
-          <a href="https://www.instagram.com/deafartsresidency/" rel="noopener">
-            Instagram
-          </a>
-          <a href="https://deafartsresidency.com/privacy" className="md:ml-auto">
-            Privacy Policy
-          </a>
-        </nav>
         <div
-          className="g12 rows mt-[clamp(2.5rem,8vh,4rem)]"
+          className="g12 rows"
           style={{
             fontFamily: "var(--font-sans)",
             fontWeight: 500,
